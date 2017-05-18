@@ -1,4 +1,6 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc;
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,14 +30,35 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">MyCollectionDataBase</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">MyCollection</a>
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse navbar-left">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <!--<li><a asp-area="" asp-controller="User" asp-action="Login">Log In</a></li>-->
                 </ul>
+            </div>
+            <div class="nav navbar-nav navbar-right btn-group">
+                @if (Context.Session.Get("Username") != null)
+                {
+                    <button type="button" class="btn btn-primary navbar-btn" onclick="location.href='@Url.RouteUrl("Profile", new { controller = "User", action = "Profile", username = Context.Session.GetString("Username") })'">My Profile</button>
+                    <button type="button" class="btn btn-primary dropdown-toggle navbar-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Collection</a></li>
+                        <li><a href="#">Friends</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href='@Url.Action("Logout", "User")'>Logout</a></li>
+                    </ul>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-primary navbar-btn" onclick="location.href='@Url.Action("Login", "User")'">Log In</button>
+                    <button type="button" class="btn btn-primary navbar-btn" onclick="location.href='@Url.Action("Register", "User")'">Sign Up</button>
+                }
             </div>
         </div>
     </nav>
@@ -43,7 +66,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2017 - MyCollectionDataBase</p>
+            <p>&copy; @DateTime.Now.Year - MyCollectionDataBase</p>
         </footer>
     </div>
 

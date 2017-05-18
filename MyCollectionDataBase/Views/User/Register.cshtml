@@ -1,0 +1,34 @@
+﻿@using Models;
+@model User
+    @{
+        ViewData["Title"] = "Register";
+    }
+
+    <h2>Register</h2>
+
+    <form method="post">
+        <div class="text-danger">
+            @Html.ValidationSummary();
+        </div>
+        <div class="form-group">
+            <label for="email">Email: </label>
+            <input type="email" class="form-control" id="email">
+            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="username">Username: </label>
+            <input type="text" class="form-control" id="username">
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="password">Password: </label>
+            <input type="password" class="form-control" id="password">
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="passwordc">Confirm password: </label>
+            <input type="password" class="form-control" id="passwordc">
+            <span asp-validation-for="ConfirmationPassword" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
