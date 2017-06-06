@@ -1,0 +1,28 @@
+@model Models.Media
+
+<h3>Media Details</h3>
+
+<form method="post">
+    <div class="input-group">
+        <span class="input-group-addon" id="MediaType-addon"><b>Country</b></span>
+        <select name="MediaType" class="form-control" aria-describedby="MediaType-addon" style="max-width: 100%">
+            <option value="Movie">Game</option>
+            <option value="Movie">Movie</option>
+            <option value="Music">Music</option>
+            <option value="TV-Show">TV-Show</option>
+        </select>
+    </div>
+    <br />
+    <div class="input-group">
+        <span class="input-group-addon" id="Runtime-addon"><b>Runtime</b></span>
+        <input name="Runtime" value="@Model.Runtime" type="number" class="form-control" aria-describedby="Runtime-addon" style="max-width: 100%">
+        <span class="input-group-addon">Minutes</span>
+        <span asp-validation-for="Runtime" class="text-danger"></span>
+    </div>
+    <br />
+    <div class="input-group">
+        <span class="input-group-addon" id="Platform-addon"><b>Platform</b></span>
+        <input name="Platform" value="@Model.Platform" type="number" class="form-control" aria-describedby="Platform-addon" style="max-width: 100%;" placeholder="Only applies when type is game">
+        <span asp-validation-for="Platform" class="text-danger"></span>
+    </div>
+</form>

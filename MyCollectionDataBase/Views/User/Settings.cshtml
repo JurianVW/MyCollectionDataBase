@@ -1,0 +1,43 @@
+@model MyCollectionDataBase.ViewModels.UserSettings
+@{
+    ViewData["Title"] = "Settings";
+}
+<h2>Settings</h2>
+<div class="row">
+    <div class="col-lg-6">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="EmailAddress">Email: </label>
+                <input name="EmailAddress" value="@Model.EmailAddress " type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label asp-for="Username">Username: </label>
+                <input name="Username" value="@Model.Username" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Password: </label>
+                <input name="Password" value="@Model.Password" type="password" class="form-control">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li><span asp-validation-for="EmailAddress" class="text-danger"></span></li>
+                <li><span asp-validation-for="Username" class="text-danger"></span></li>
+                <li><span asp-validation-for="Password" class="text-danger"></span></li>
+                @if (ViewBag.MessageEmail != null)
+                {
+                    <li><span class="text-danger">@ViewBag.MessageEmail</span></li>
+                }
+                @if (ViewBag.MessageUsername != null)
+                {
+                    <li><span class="text-danger">@ViewBag.MessageUsername</span></li>
+                }
+            </ul>
+        </form>
+    </div>
+    <div class="col-lg-4 col-lg-offset-2">
+        <img src="@Model.ProfilePicture" srcset="http://www.hbc333.com/data/out/190/47199326-profile-pictures.png" alt="Profile picture" class="img-thumbnail" width="250" height="250" />
+        <input type="file" class="" />
+    </div>
+</div>

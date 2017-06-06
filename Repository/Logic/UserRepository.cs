@@ -17,27 +17,72 @@ namespace Repository.Logic
 
         public bool CheckUserLogin(User user)
         {
-            return this.context.CheckUserLogin(user);
+            return context.CheckUserLogin(user);
         }
 
-        public List GetAccount()
+        public bool CheckUsernameAvailability(User user)
         {
-            return this.context.GetAccount();
+            return context.CheckUsernameAvailability(user);
         }
 
-        public void RespondFriendRequest(User sender, User reciever, bool repsonse)
+        public bool CheckEmailAvailability(User user)
         {
-            this.context.RespondFriendRequest(sender, reciever, repsonse);
+            return context.CheckEmailAvailability(user);
+        }
+
+        public User GetUser(string username)
+        {
+            return context.GetUser(username);
+        }
+
+        public List<UserFriend> GetUserFriends(string username)
+        {
+            return context.GetUserFriends(username);
+        }
+
+        public void RespondFriendRequest(int senderID, int recieverID, bool response)
+        {
+            context.RespondFriendRequest(senderID, recieverID, response);
+        }
+
+        public void Unfriend(int senderID, int recieverID)
+        {
+            context.Unfriend(senderID, recieverID);
         }
 
         public void SaveUser(User user)
         {
-            this.context.SaveUser(user);
+            context.SaveUser(user);
         }
 
-        public void SendFriendRequest(User sender, User reciever)
+        public void SendFriendRequest(int senderID, string recieverUsername, string username)
         {
-            this.context.SendFriendRequest(sender, reciever);
+            bool valid = true;
+            int recieverID = GetUser(recieverUsername).ID;
+            foreach (UserFriend uf in context.GetUserFriends(username))
+            {
+                if (uf.ID == recieverID || senderID == recieverID)
+                {
+                    valid = false;
+                }
+            }
+            if (valid)
+            {
+                context.SendFriendRequest(senderID, recieverID);
+            }
+        }
+
+        public List<string> GetUserFriendUsernames(string username)
+        {
+            List<string> usernames = new List<string>();
+            foreach (UserFriend uf in context.GetUserFriends(username))
+            {
+                if (uf.Status)
+                {
+                    usernames.Add(uf.Username);
+                }
+            }
+            return usernames;
         }
     }
 }

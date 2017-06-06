@@ -1,0 +1,45 @@
+@using System.Collections.Generic
+@using Models
+@model IEnumerable<List>
+
+@{
+    ViewData["Title"] = "Lists";
+}
+
+<h2>My Lists</h2>
+
+<p><a asp-action="Create">Create new</a></p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-primary">
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParm">Name <span class="glyphicon glyphicon-sort pull-right"></span></a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (List list in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-route-id="@list.ID">@Html.DisplayFor(modelList => list.Name)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelList => list.Description)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@list.ID">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@list.ID">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@list.ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

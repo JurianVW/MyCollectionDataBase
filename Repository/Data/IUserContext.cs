@@ -7,12 +7,20 @@ namespace Repository.Data
     {
         void SaveUser(User user);
 
-        List GetAccount();
+        User GetUser(string username);
+
+        List<UserFriend> GetUserFriends(string username);
 
         bool CheckUserLogin(User user);
 
-        void SendFriendRequest(User sender, User reciever);
+        bool CheckUsernameAvailability(User user);
 
-        void RespondFriendRequest(User sender, User reciever, bool repsonse);
+        bool CheckEmailAvailability(User user);
+
+        void SendFriendRequest(int senderID, int recieverID);
+
+        void RespondFriendRequest(int senderID, int recieverID, bool repsonse);
+
+        void Unfriend(int senderID, int recieverID);
     }
 }

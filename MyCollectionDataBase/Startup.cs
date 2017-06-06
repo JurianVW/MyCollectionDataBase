@@ -41,6 +41,7 @@ namespace MyCollectionDataBase
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseStatusCodePagesWithReExecute("/Home/Error");
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
@@ -61,8 +62,12 @@ namespace MyCollectionDataBase
             app.UseMvc(routes =>
             {
                 routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}")
-                     .MapRoute("Profile", "{controller=User}/{username}/{action}");
-            });
+                      //.MapRoute("List", "List/{id}/{action}", new { controller = "List" })
+                      // .MapRoute("Item", "Item/{id}/{action}", new { controller = "Item" })
+                      // .MapRoute("User", "User/{username}/{action}", new { controller = "User" })
+                      ;
+            }
+           );
         }
     }
 }

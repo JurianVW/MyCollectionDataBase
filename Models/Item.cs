@@ -4,38 +4,22 @@ namespace Models
 {
     public class Item
     {
-        public int ID { get; private set; }
-        public string ItemType { get; private set; }
-        public string Title { get; private set; }
-        public string Description { get; private set; }
-        public decimal Price { get; private set; }
-        public int Year { get; private set; }
-        public string Country { get; private set; }
-        public string Retailer { get; private set; }
-        public string Exclusive { get; private set; }
-        public int Limited { get; private set; }
-        public readonly List<Image> images;
-        public readonly List<Tag> tags;
+        public int ID { get; set; }
+        public int ListID { get; set; }
+        public string ItemType { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public int Year { get; set; }
+        public string Country { get; set; }
+        public string Retailer { get; set; }
+        public string Exclusive { get; set; }
+        public int Limited { get; set; }
+        public List<Image> images = new List<Image>();
+        public List<Tag> tags = new List<Tag>();
 
-        public Item()
-        {
-        }
-
-        public Item(int id, string itemType, string title, string description, decimal price, int year, string country,
-            string retailer, string exclusive, int limited, List<Image> images, List<Tag> tags)
-        {
-            this.ID = id;
-            this.ItemType = itemType;
-            this.Title = title;
-            this.Description = description;
-            this.Price = price;
-            this.Year = year;
-            this.Country = country;
-            this.Retailer = retailer;
-            this.Exclusive = exclusive;
-            this.Limited = limited;
-            this.images.AddRange(images);
-            this.tags.AddRange(tags);
-        }
+        public Book ItemBook { get; set; }
+        public Case ItemCase { get; set; }
+        public Media ItemMedia { get; set; }
     }
 }

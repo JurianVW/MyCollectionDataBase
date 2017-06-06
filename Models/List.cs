@@ -1,24 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
     public class List
     {
-        public int ID { get; private set; }
-        public string Name { get; private set; }
-        public string Description { get; private set; }
-        public readonly List<Item> items;
+        public int ID { get; set; }
+        public int UserID { get; set; }
 
-        public List()
-        {
-        }
+        [Required(ErrorMessage = "Name is required")]
+        public string Name { get; set; }
 
-        public List(int id, string name, string description, List<Item> items)
-        {
-            this.ID = id;
-            this.Name = name;
-            this.Description = description;
-            this.items.AddRange(items);
-        }
+        public string Description { get; set; } = "";
+        public IEnumerable<Item> items = new List<Item>();
     }
 }

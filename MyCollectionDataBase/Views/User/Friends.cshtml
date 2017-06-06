@@ -1,0 +1,108 @@
+@using System.Collections.Generic
+@using Models
+@model IEnumerable<UserFriend>
+@{
+    ViewData["Title"] = "Friends";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Friends</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Username)
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (UserFriend userFriend in Model)
+                    {
+                        if (userFriend.Status)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Profile" asp-route-username="@userFriend.Username">@Html.DisplayFor(modelList => userFriend.Username)</a>
+                                </td>
+                                <td>
+                                    <a asp-action="Profile" asp-route-username="@userFriend.Username">View Profile</a> |
+                                    <a asp-action="FriendAction" asp-route-id="@userFriend.ID" asp-route-friendAction="Unfriend">Unfriend</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6">
+            <h3>Pending</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Username)
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (UserFriend userFriend in Model)
+                    {
+                        if (!userFriend.Status && !userFriend.Sender)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Profile" asp-route-username="@userFriend.Username">@Html.DisplayFor(modelList => userFriend.Username)</a>
+                                </td>
+                                <td>
+                                    <a asp-action="FriendAction" asp-route-id="@userFriend.ID" asp-route-friendAction="Accept">Accept</a> |
+                                    <a asp-action="FriendAction" asp-route-id="@userFriend.ID" asp-route-friendAction="Decline">Decline</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <h3>Awaiting response</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Username)
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (UserFriend userFriend in Model)
+                {
+                    if (!userFriend.Status && userFriend.Sender)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="Profile" asp-route-username="@userFriend.Username">@Html.DisplayFor(modelList => userFriend.Username)</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+            <h3>Send Friend Request</h3>
+            <form asp-action="FriendAction" asp-controller="User" asp-route-friendAction="SendRequest">
+                <div class="input-group">
+                    <input name="addFriendUsername" type="text" class="form-control" style="max-width: 100%" placeholder="Username">
+
+                    <label class="input-group-btn">
+                        <input class="btn btn-default" type="submit" value="Add Friend">
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

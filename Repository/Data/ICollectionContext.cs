@@ -5,12 +5,28 @@ namespace Repository.Data
 {
     public interface ICollectionContext
     {
-        void saveList(List list);
+        void SaveList(List list, int userID);
 
-        List getList();
+        List GetList(int listID, int userID);
 
-        void saveItem(Item item);
+        List<List> GetLists(int userID);
 
-        Item getItem();
+        void DeleteList(int listID);
+
+        void SaveItem(Item item);
+
+        void SaveItem(Item item, Book itemBook);
+
+        void SaveItem(Item item, Case itemCase);
+
+        void SaveItem(Item item, Media itemMedia);
+
+        Item GetItem(int itemID, int userID);
+
+        List<Item> GetAllItems(int userID);
+
+        List<Item> GetItems(int listID, int userID);
+
+        void DeleteItem(int itemID);
     }
 }
