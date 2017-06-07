@@ -1,7 +1,26 @@
-
+@using Models
+@model Models.Item
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2>@Model.Title</h2>
+<h4 class="@if(Model.Description == ""){<text>hidden</text>}">@Model.Description</h4>
+<h4 class="@if(Model.ItemType == ""){<text>hidden</text>}"><b>Type: </b>@Model.ItemType</h4>
+<br />
+<p class="@if(Model.Price == 0){<text>hidden</text>}"><b>Price: </b>@Model.Price</p>
+<p class="@if(Model.Year == 0){<text>hidden</text>}"><b>Year: </b>@Model.Year</p>
+<p class="@if(Model.Country == ""){<text>hidden</text>}"><b>Country: </b>@Model.Country</p>
+<p class="@if(Model.Retailer == ""){<text>hidden</text>}"><b>Retailer: </b>@Model.Retailer</p>
+<p class="@if(Model.Exclusive == ""){<text>hidden</text>}"><b>Exclusive: </b>@Model.Exclusive</p>
 
+<br />
+<p>
+    <b>Genres: </b>@foreach (Tag t in @Model.tags)
+    {
+        if (t.Type == "Genre")
+        {
+            <text>@t.Name, </text>
+        }
+    }
+</p>

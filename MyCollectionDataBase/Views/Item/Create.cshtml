@@ -31,7 +31,7 @@
 
             <div class="input-group">
                 <span class="input-group-addon" id="Name-addon"><b>Title</b></span>
-                <input name="Name" value="@Model.Title" type="text" class="form-control" aria-describedby="Name-addon" style="max-width: 100%">
+                <input required name="Name" value="@Model.Title" type="text" class="form-control" aria-describedby="Name-addon" style="max-width: 100%">
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <br />
@@ -61,10 +61,10 @@
             <div class="input-group">
                 <span class="input-group-addon" id="Country-addon"><b>Country</b></span>
                 <select name="Country" class="form-control" aria-describedby="Country-addon" style="max-width: 100%">
-                    <option value="AF">Afghanistan</option>
-                    <option value="AX">Aland Islands</option>
-                    <option value="AL">Albania</option>
-                    <option value="DZ">Algeria</option>
+                    <option value="AF" @if (Model.Country == "AF") { <text> selected</text>}>Afghanistan</option>
+                    <option value="AX" @if (Model.Country == "AX") { <text> selected</text>}>Aland Islands</option>
+                    <option value="AL" @if (Model.Country == "AL") { <text> selected</text>}>Albania</option>
+                    <option value="DZ" @if (Model.Country == "DZ") { <text> selected</text>}>Algeria</option>
                     <option value="AS">American Samoa</option>
                     <option value="AD">Andorra</option>
                     <option value="AO">Angola</option>
@@ -351,6 +351,7 @@
                     }
                 </select>
             </div>
+
             <br />
             <div id="typedetails"></div>
         </div>

@@ -169,10 +169,7 @@ namespace MyCollectionDataBase.Controllers
                 userID = Convert.ToInt32(HttpContext.Session.GetInt32("UserID"));
                 try
                 {
-                    if (collectionRepository.CheckMyList(id, userID))
-                    {
-                        collectionRepository.DeleteList(id);
-                    }
+                    collectionRepository.DeleteList(id, userID);
                     return RedirectToAction("Index");
                 }
                 catch (Exception e)

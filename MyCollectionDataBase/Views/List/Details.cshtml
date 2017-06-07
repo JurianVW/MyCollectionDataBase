@@ -4,46 +4,47 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2>@Model.Name</h2>
+<h5>@Model.Description</h5>
 
-<p><a asp-action="Create" asp-controller="Item">Create new</a></p>
+    <p><a asp-action="Create" asp-controller="Item">Create item</a></p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th class="text-primary">
-                <a asp-action="Details" asp-route-sortOrder="@ViewBag.NameSortParm">Title <span class="glyphicon glyphicon-sort pull-right"></span></a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                <a asp-action="Details" asp-route-sortOrder="@ViewBag.TypeSortParm">Type <span class="glyphicon glyphicon-sort pull-right"></span></a>
-            </th>
-            <th>
-                Actions
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (Item item in Model.items)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelList => item.Title)</a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelList => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelList => item.ItemType)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-controller="Item" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Delete" asp-controller="Item" asp-route-id="@item.ID">Delete</a>
-                </td>
+                <th class="text-primary">
+                    <a asp-action="Details" asp-route-sortOrder="@ViewBag.NameSortParm">Title <span class="glyphicon glyphicon-sort pull-right"></span></a>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    <a asp-action="Details" asp-route-sortOrder="@ViewBag.TypeSortParm">Type <span class="glyphicon glyphicon-sort pull-right"></span></a>
+                </th>
+                <th>
+                    Actions
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (Item item in Model.items)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="Details" asp-controller="Item" asp-route-id="@item.ID">@Html.DisplayFor(modelList => item.Title)</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelList => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelList => item.ItemType)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-controller="Item" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Delete" asp-controller="Item" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

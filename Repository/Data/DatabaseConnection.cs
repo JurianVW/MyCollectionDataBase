@@ -8,7 +8,7 @@ namespace Repository.Data
     public class DatabaseConnection
     {
         //From server
-        //nothing yet
+        //private static string connectionString = "";
 
         //From pc
         private static string connectionString = "Data Source=192.168.19.12; Initial Catalog=MyCollectionDB; User id=frietpan; Password=frietpan; Connection Timeout=3";

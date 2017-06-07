@@ -246,5 +246,25 @@ namespace Repository.Data
                 command.ExecuteNonQuery();
             }
         }
+
+        //For the API
+        public List<string> GetUsernames()
+        {
+            string query = "SELECT Username FROM [User]";
+            List<string> usernames = new List<string>();
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        usernames.Add(dataReader.GetString(dataReader.GetOrdinal("Username")));
+                    }
+                }
+            }
+            return usernames;
+        }
     }
 }

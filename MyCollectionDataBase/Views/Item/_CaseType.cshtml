@@ -6,7 +6,7 @@
     <div class="input-group">
         <span class="input-group-addon" id="CaseType-addon"><b>Country</b></span>
         <select name="CaseType" class="form-control" aria-describedby="CaseType-addon" style="max-width: 100%">
-            <option value="Steelbook">Steelbook</option>
+            <option value="Steelbook" selected="">Steelbook</option>
             <option value="Blu-Ray Case">Blu-Ray Case</option>
             <option value="Music">Music</option>
             <option value="TV-Show">TV-Show</option>
@@ -19,4 +19,42 @@
         <span asp-validation-for="Cover" class="text-danger"></span>
     </div>
     <br />
+    <h4>Discs</h4>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="input-group">
+                <span class="input-group-addon" id="4K Blu-Ray-addon"><b>4K Blu-Ray</b></span>
+                <input name="4K Blu-Ray" value="0" type="number" class="form-control" aria-describedby="4K Blu-Ray-addon" min="0" style="max-width: 100%">
+            </div>
+            <br />
+            <div class="input-group">
+                <span class="input-group-addon" id="Blu-Ray-addon"><b>Blu-Ray</b></span>
+                <input name="Blu-Ray" value="0" type="number" class="form-control" aria-describedby="Blu-Ray-addon" min="0" style="max-width: 100%">
+            </div>
+            <br />
+            <div class="input-group">
+                <span class="input-group-addon" id="CD-addon"><b>CD</b></span>
+                <input name="CD" value="0" type="number" class="form-control" aria-describedby="CD-addon" min="0" style="max-width: 100%">
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="input-group">
+                <span class="input-group-addon" id="3D Blu-Ray-addon"><b>3D Blu-Ray</b></span>
+                <input name="3D Blu-Ray" value="0" type="number" class="form-control" aria-describedby="3D Blu-Ray-addon" min="0" style="max-width: 100%">
+            </div>
+            <br />
+            <div class="input-group">
+                <span class="input-group-addon" id="DVD-addon"><b>DVD</b></span>
+                <input name="DVD" value="0" type="number" class="form-control" aria-describedby="DVD-addon" min="0" style="max-width: 100%">
+            </div>
+        </div>
+    </div>
+    <br />
+    <h4>Finishes</h4>
+    <ul>
+        @foreach (string finish in ViewBag.Finishes)
+        {
+            <li style="display: block; float: left; width: 25%"><input name="Finishes" type="checkbox" value="@finish" /> @finish</li>
+        }
+    </ul>
 </form>

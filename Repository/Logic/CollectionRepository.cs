@@ -30,23 +30,17 @@ namespace Repository.Logic
             context.SaveList(list, userID);
         }
 
-        public void DeleteList(int listID)
+        public void DeleteList(int listID, int userID)
         {
-            context.DeleteList(listID);
+            if (CheckMyList(listID, userID))
+            {
+                context.DeleteList(listID);
+            }
         }
 
         public bool CheckMyList(int listID, int userID)
         {
             if (context.GetList(listID, userID).ID == 0)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public bool CheckMyItem(int itemID, int userID)
-        {
-            if (context.GetItem(itemID, userID).ID == 0)
             {
                 return false;
             }
@@ -81,6 +75,41 @@ namespace Repository.Logic
         public void SaveItem(Item item, Media itemMedia)
         {
             context.SaveItem(item, itemMedia);
+        }
+
+        public void DeleteItem(int itemID, int userID)
+        {
+            if (context.CheckMyItem(itemID, userID))
+            {
+                context.DeleteItem(itemID);
+            }
+        }
+
+        public List<string> GetFinishes()
+        {
+            return context.GetFinishes();
+        }
+
+        public List<string> GetGenres()
+        {
+            return context.GetGenres();
+        }
+
+        public List<string> SeperateString(string list)
+        {
+            List<string> result = new List<string>();
+            if (list != null)
+            {
+                list = list.Trim() + ",";
+                while (list.Length > 0)
+                {
+                    int index = list.IndexOf(",");
+                    string item = list.Substring(0, index).Trim();
+                    if (item.Length > 0) { result.Add(item); };
+                    list = list.Remove(0, index + 1).Trim();
+                }
+            }
+            return result;
         }
     }
 }

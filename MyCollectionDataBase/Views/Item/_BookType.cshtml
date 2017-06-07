@@ -91,3 +91,11 @@
     <input name="Pages" value="@Model.Pages" type="number" class="form-control" aria-describedby="Pages-addon" min="0" style="max-width: 100%; ">
     <span asp-validation-for="Pages" class="text-danger"></span>
 </div>
+<br />
+<h4>Genres</h4>
+<ul>
+    @foreach (string genre in ViewBag.Genres)
+    {
+        <li style="display: block; float: left; width: 25%"><input name="Genres" type="checkbox" value="@genre" /> @genre</li>
+    }
+</ul>

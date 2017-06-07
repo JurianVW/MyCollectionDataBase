@@ -84,5 +84,10 @@ namespace Repository.Logic
             }
             return usernames;
         }
+
+        public List<string> GetUsernames()
+        {
+            return context.GetUsernames();
+        }
     }
 }

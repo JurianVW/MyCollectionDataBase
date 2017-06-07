@@ -1,4 +1,5 @@
 @using System.Collections.Generic
+@using System.Linq
 @using Models
 @model IEnumerable<List>
 
@@ -20,6 +21,9 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
+                Items
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -33,6 +37,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelList => list.Description)
+                </td>
+                <td>
+                    @list.items.Count()
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-id="@list.ID">Details</a> |

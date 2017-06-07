@@ -19,8 +19,10 @@ namespace Repository.Data
 
         void SendFriendRequest(int senderID, int recieverID);
 
-        void RespondFriendRequest(int senderID, int recieverID, bool repsonse);
+        void RespondFriendRequest(int senderID, int recieverID, bool response);
 
         void Unfriend(int senderID, int recieverID);
+
+        List<string> GetUsernames();
     }
 }

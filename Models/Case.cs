@@ -6,5 +6,6 @@ namespace Models
     {
         public string CaseType { get; set; }
         public string Cover { get; set; }
+        public List<Disc> Discs { get; set; } = new List<Disc>();
     }
 }

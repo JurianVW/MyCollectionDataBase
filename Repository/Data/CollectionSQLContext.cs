@@ -10,9 +10,38 @@ namespace Repository.Data
     {
         private DatabaseConnection con = new DatabaseConnection();
 
+        public bool CheckMyItem(int itemID, int userID)
+        {
+            string query = "SELECT * FROM [Item] i " +
+                           "JOIN List_Item li ON li.Item_ID = i.ID " +
+                           "JOIN List l ON l.ID = li.List_ID " +
+                           "WHERE l.User_ID = @User_ID AND i.ID = @ID ";
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ID", itemID);
+                command.Parameters.AddWithValue("@User_ID", userID);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public Item GetItem(int itemID, int userID)
         {
-            string query = "SELECT * FROM [Item] i JOIN List_Item li ON li.Item_ID = i.ID JOIN List l ON l.ID = li.List_ID WHERE l.User_ID = @User_ID AND i.ID = @ID";
+            string query = "SELECT i.*, b.*, c.Type AS 'CaseType', c.Cover, m.Type AS 'MediaType', m.Runtime, m.Platform FROM [Item] i " +
+                           "JOIN List_Item li ON li.Item_ID = i.ID " +
+                           "JOIN List l ON l.ID = li.List_ID " +
+                           "LEFT OUTER JOIN [Book] b ON b.Item_ID = i.ID " +
+                           "LEFT OUTER JOIN [Case] c ON c.Item_ID = i.ID " +
+                           "LEFT OUTER JOIN [Media] m ON m.Item_ID = i.ID " +
+                           "WHERE l.User_ID = @User_ID AND i.ID = @ID ";
             Item item = new Item();
             using (SqlCommand command = con.Connection.CreateCommand())
             {
@@ -48,13 +77,13 @@ namespace Repository.Data
 
                             case "Case":
                                 item.ItemCase = new Case();
-                                item.ItemCase.CaseType = dataReader.GetString(dataReader.GetOrdinal("Type"));
+                                item.ItemCase.CaseType = dataReader.GetString(dataReader.GetOrdinal("CaseType"));
                                 item.ItemCase.Cover = dataReader.IsDBNull(dataReader.GetOrdinal("Cover")) ? "" : dataReader.GetString(dataReader.GetOrdinal("Cover"));
                                 break;
 
                             case "Media":
                                 item.ItemMedia = new Media();
-                                item.ItemMedia.MediaType = dataReader.GetString(dataReader.GetOrdinal("Type"));
+                                item.ItemMedia.MediaType = dataReader.GetString(dataReader.GetOrdinal("MediaType"));
                                 item.ItemMedia.Runtime = dataReader.IsDBNull(dataReader.GetOrdinal("Runtime")) ? 0 : dataReader.GetInt32(dataReader.GetOrdinal("Runtime"));
                                 item.ItemMedia.Platform = dataReader.IsDBNull(dataReader.GetOrdinal("Platform")) ? "" : dataReader.GetString(dataReader.GetOrdinal("Platform"));
                                 break;
@@ -62,6 +91,7 @@ namespace Repository.Data
                     }
                 }
             }
+            GetItemTags(item);
             return item;
         }
 
@@ -229,6 +259,7 @@ namespace Repository.Data
                     item.ID = result;
                     SaveListItem(item);
                 }
+                SaveItemTags(item);
             }
         }
 
@@ -303,6 +334,7 @@ namespace Repository.Data
 
                 command.ExecuteNonQuery();
             }
+            SaveDiscs(item);
         }
 
         public void SaveItem(Item item, Media itemMedia)
@@ -340,11 +372,159 @@ namespace Repository.Data
 
                 command.ExecuteNonQuery();
             }
+            SaveDiscs(item);
+        }
+
+        public void SaveItemTags(Item item)
+        {
+            List<Tag> existingTags = new List<Tag>();
+
+            string query = "SELECT * FROM [Tag] WHERE [Type] = 'Tag' OR [Type] = 'Genre'";
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        existingTags.Add(new Tag
+                        {
+                            ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                            Name = dataReader.GetString(dataReader.GetOrdinal("Name")),
+                            Type = dataReader.GetString(dataReader.GetOrdinal("Type")),
+                        });
+                    }
+                }
+            }
+
+            foreach (Tag t in item.tags)
+            {
+                bool exists = false;
+                foreach (Tag et in existingTags)
+                {
+                    if (et.Name == t.Name && et.Type == t.Type)
+                    {
+                        exists = true;
+                        t.ID = et.ID;
+                    }
+                }
+                if (!exists)
+                {
+                    CreateTag(t);
+                }
+                SaveTag(t, item.ID);
+            }
+        }
+
+        public void CreateTag(Tag tag)
+        {
+            string query = "INSERT INTO [Tag] ([Name], [Type])" +
+                           " OUTPUT INSERTED.ID" +
+                           " VALUES (@Name, @Type)";
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@Name", tag.Name);
+                command.Parameters.AddWithValue("@Type", tag.Type);
+                tag.ID = Convert.ToInt32(command.ExecuteScalar());
+            }
+        }
+
+        public void SaveTag(Tag tag, int itemID)
+        {
+            string query = "INSERT INTO [Item_Tag] ([Item_ID], [Tag_ID])" +
+                          " VALUES (@ItemID, @TagID)";
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ItemID", itemID);
+                command.Parameters.AddWithValue("@TagID", tag.ID);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void GetItemTags(Item item)
+        {
+            string query = "SELECT * FROM TAG t " +
+                           "JOIN[Item_Tag] it on it.Tag_ID = t.ID " +
+                           "WHERE it.Item_ID = @ItemID";
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ItemID", item.ID);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        item.tags.Add(new Tag()
+                        {
+                            ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                            Name = dataReader.GetString(dataReader.GetOrdinal("Name")),
+                            Type = dataReader.GetString(dataReader.GetOrdinal("Type"))
+                        });
+                    }
+                }
+            }
+        }
+
+        public void SaveDiscs(Item item)
+        {
+            List<Disc> discsDB = GetDiscs();
+            List<Disc> discs = new List<Disc>();
+
+            if (item.ItemType == "Case")
+            {
+                discs = item.ItemCase.Discs;
+            }
+            else if (item.ItemType == "Media")
+            {
+                discs = item.ItemMedia.Discs;
+            }
+
+            foreach (Disc d in discs)
+            {
+                foreach (Disc disc in discsDB)
+                {
+                    if (d.Format == disc.Format)
+                    {
+                        d.ID = disc.ID;
+                    }
+                }
+                for (int i = 0; i < d.Amount; i++)
+                {
+                    string query = "INSERT INTO [Case_Media_Disc] ([Disc_ID], [Case_ID], [Media_ID])" +
+                                   " VALUES (@DiscID, @CaseID, @MediaID)";
+                    using (SqlCommand command = con.Connection.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.CommandType = CommandType.Text;
+                        command.Parameters.AddWithValue("@DiscID", d.ID);
+                        if (item.ItemType == "Case") { command.Parameters.AddWithValue("@CaseID", item.ID); } else { command.Parameters.AddWithValue("@CaseID", DBNull.Value); }
+                        if (item.ItemType == "Media") { command.Parameters.AddWithValue("@MediaID", item.ID); } else { command.Parameters.AddWithValue("@MediaID", DBNull.Value); }
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
         }
 
         public void DeleteItem(int itemID)
         {
-            throw new NotImplementedException();
+            string query = "DELETE FROM Item WHERE ID=@ItemID";
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ItemID", itemID);
+                command.ExecuteNonQuery();
+            }
         }
 
         public List GetList(int listID, int userID)
@@ -366,9 +546,12 @@ namespace Repository.Data
                             ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
                             UserID = dataReader.GetInt32(dataReader.GetOrdinal("User_ID")),
                             Name = dataReader.GetString(dataReader.GetOrdinal("Name")),
-                            Description = dataReader.GetString(dataReader.GetOrdinal("Description")),
                             items = new List<Item>(GetItems(listID, userID))
                         };
+                        if (!dataReader.IsDBNull(dataReader.GetOrdinal("Description")))
+                        {
+                            list.Description = dataReader.GetString(dataReader.GetOrdinal("Description"));
+                        }
                     }
                 }
             }
@@ -392,8 +575,9 @@ namespace Repository.Data
                         {
                             ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
                             UserID = dataReader.GetInt32(dataReader.GetOrdinal("User_ID")),
-                            Name = dataReader.GetString(dataReader.GetOrdinal("Name"))
+                            Name = dataReader.GetString(dataReader.GetOrdinal("Name")),
                         };
+                        list.items = new List<Item>(GetItems(list.ID, userID));
                         if (!dataReader.IsDBNull(dataReader.GetOrdinal("Description")))
                         {
                             list.Description = dataReader.GetString(dataReader.GetOrdinal("Description"));
@@ -446,6 +630,67 @@ namespace Repository.Data
                 command.Parameters.AddWithValue("@ListID", listID);
                 command.ExecuteNonQuery();
             }
+        }
+
+        public List<Disc> GetDiscs()
+        {
+            string query = "SELECT * FROM [Disc]";
+            List<Disc> discs = new List<Disc>();
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        discs.Add(new Disc
+                        {
+                            ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                            Format = dataReader.GetString(dataReader.GetOrdinal("Format"))
+                        });
+                    }
+                }
+            }
+            return discs;
+        }
+
+        public List<string> GetFinishes()
+        {
+            string query = "SELECT [Name] FROM [Tag] WHERE [Type] = 'Finish'";
+            List<string> finishes = new List<string>();
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        finishes.Add(dataReader.GetString(dataReader.GetOrdinal("Name")));
+                    }
+                }
+            }
+            return finishes;
+        }
+
+        public List<string> GetGenres()
+        {
+            string query = "SELECT [Name] FROM [Tag] WHERE [Type] = 'Genre'";
+            List<string> genres = new List<string>();
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        genres.Add(dataReader.GetString(dataReader.GetOrdinal("Name")));
+                    }
+                }
+            }
+            return genres;
         }
     }
 }

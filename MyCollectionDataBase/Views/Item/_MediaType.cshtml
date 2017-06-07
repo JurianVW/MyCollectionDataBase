@@ -2,27 +2,63 @@
 
 <h3>Media Details</h3>
 
-<form method="post">
-    <div class="input-group">
-        <span class="input-group-addon" id="MediaType-addon"><b>Country</b></span>
-        <select name="MediaType" class="form-control" aria-describedby="MediaType-addon" style="max-width: 100%">
-            <option value="Movie">Game</option>
-            <option value="Movie">Movie</option>
-            <option value="Music">Music</option>
-            <option value="TV-Show">TV-Show</option>
-        </select>
+<div class="input-group">
+    <span class="input-group-addon" id="MediaType-addon"><b>Type</b></span>
+    <select name="MediaType" class="form-control" aria-describedby="MediaType-addon" style="max-width: 100%">
+        <option value="Game">Game</option>
+        <option value="Movie">Movie</option>
+        <option value="Music">Music</option>
+        <option value="TV-Show">TV-Show</option>
+    </select>
+</div>
+<br />
+<div class="input-group">
+    <span class="input-group-addon" id="Runtime-addon"><b>Runtime</b></span>
+    <input name="Runtime" value="@Model.Runtime" type="number" class="form-control" aria-describedby="Runtime-addon" style="max-width: 100%">
+    <span class="input-group-addon">Minutes</span>
+</div>
+<br />
+<div class="input-group">
+    <span class="input-group-addon" id="Platform-addon"><b>Platform</b></span>
+    <input name="Platform" value="@Model.Platform" type="number" class="form-control" aria-describedby="Platform-addon" style="max-width: 100%;" placeholder="e.g. Playstion 4, XBOX One, ...">
+</div>
+<br />
+<h4>Discs</h4>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="input-group">
+            <span class="input-group-addon" id="4K Blu-Ray-addon"><b>4K Blu-Ray</b></span>
+            <input name="4K Blu-Ray" value="0" type="number" class="form-control" aria-describedby="4K Blu-Ray-addon" min="0" style="max-width: 100%">
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon" id="Blu-Ray-addon"><b>Blu-Ray</b></span>
+            <input name="Blu-Ray" value="0" type="number" class="form-control" aria-describedby="Blu-Ray-addon" min="0" style="max-width: 100%">
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon" id="CD-addon"><b>CD</b></span>
+            <input name="CD" value="0" type="number" class="form-control" aria-describedby="CD-addon" min="0" style="max-width: 100%">
+        </div>
     </div>
-    <br />
-    <div class="input-group">
-        <span class="input-group-addon" id="Runtime-addon"><b>Runtime</b></span>
-        <input name="Runtime" value="@Model.Runtime" type="number" class="form-control" aria-describedby="Runtime-addon" style="max-width: 100%">
-        <span class="input-group-addon">Minutes</span>
-        <span asp-validation-for="Runtime" class="text-danger"></span>
+    <div class="col-lg-6">
+        <div class="input-group">
+            <span class="input-group-addon" id="3D Blu-Ray-addon"><b>3D Blu-Ray</b></span>
+            <input name="3D Blu-Ray" value="0" type="number" class="form-control" aria-describedby="3D Blu-Ray-addon" min="0" style="max-width: 100%">
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon" id="DVD-addon"><b>DVD</b></span>
+            <input name="DVD" value="0" type="number" class="form-control" aria-describedby="DVD-addon" min="0" style="max-width: 100%">
+        </div>
     </div>
-    <br />
-    <div class="input-group">
-        <span class="input-group-addon" id="Platform-addon"><b>Platform</b></span>
-        <input name="Platform" value="@Model.Platform" type="number" class="form-control" aria-describedby="Platform-addon" style="max-width: 100%;" placeholder="Only applies when type is game">
-        <span asp-validation-for="Platform" class="text-danger"></span>
-    </div>
-</form>
+</div>
+<br />
+<h4>Genres</h4>
+<ul>
+    @foreach (string genre in ViewBag.Genres)
+    {
+        <li style="display: block; float: left; width: 25%"><input name="Genres" type="checkbox" value="@genre" /> @genre</li>
+    }
+</ul>
+<br />

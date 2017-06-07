@@ -1,0 +1,42 @@
+@using Models
+@using System.Collections.Generic;
+@model List<List>
+
+@{
+    ViewData["Title"] = "My Collection";
+}
+
+<h2>My Collection</h2>
+<h5>THIS PAGE IS UNFINISHED. THESE ARE JUST SOME EXAMPLES OF WHAT I WANT</h5>
+
+<h4>My Lists:</h4>
+<ul>
+    @foreach (List l in Model)
+    {
+        <li>@l.Name</li>
+    }
+</ul>
+
+@{
+    int total = 0;
+    foreach (List l in Model)
+    {
+        total = total + l.items.Count();
+    }
+
+    Item mostExpensive = new Item();
+    foreach (List l in Model)
+    {
+        foreach (Item i in l.items)
+        {
+            if (i.Price > mostExpensive.Price)
+            {
+                mostExpensive = i;
+            }
+        }
+    }
+
+}
+
+<h4>Total items: @total</h4>
+<h4>Most Expensive item: <b>@mostExpensive.Title</b> with a price of <b>@mostExpensive.Price</b></h4>

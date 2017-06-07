@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <Runtimeidentifiers>win7-x64</Runtimeidentifiers>
   </PropertyGroup>
 
   <ItemGroup>

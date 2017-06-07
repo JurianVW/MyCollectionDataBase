@@ -5,6 +5,8 @@ namespace Repository.Data
 {
     public interface ICollectionContext
     {
+        bool CheckMyItem(int itemID, int userID);
+
         void SaveList(List list, int userID);
 
         List GetList(int listID, int userID);
@@ -28,5 +30,9 @@ namespace Repository.Data
         List<Item> GetItems(int listID, int userID);
 
         void DeleteItem(int itemID);
+
+        List<string> GetFinishes();
+
+        List<string> GetGenres();
     }
 }

@@ -119,16 +119,18 @@ namespace MyCollectionDataBase.Controllers
                 {
                     item.ItemType = Request.Form["Type"];
                 }
-                string tags = Request.Form["Tags"];
-                tags = tags.Trim() + ",";
 
-                while (tags.Length > 0)
+                foreach (string s in collectionRepository.SeperateString(Request.Form["Tags"]))
                 {
-                    string tag;
-                    int index = tags.IndexOf(",");
-                    tag = tags.Substring(0, index).Trim();
-                    if (tag.Length > 0) { item.tags.Add(new Tag() { Name = tag, Type = "Tag" }); };
-                    tags = tags.Remove(0, index + 1).Trim();
+                    item.tags.Add(new Tag() { Name = s, Type = "Tag" });
+                }
+                foreach (string s in collectionRepository.SeperateString(Request.Form["Genres"]))
+                {
+                    item.tags.Add(new Tag() { Name = s, Type = "Genre" });
+                }
+                foreach (string s in collectionRepository.SeperateString(Request.Form["Finishes"]))
+                {
+                    item.tags.Add(new Tag() { Name = s, Type = "Finish" });
                 }
                 userID = Convert.ToInt32(HttpContext.Session.GetInt32("UserID"));
                 try
@@ -147,6 +149,11 @@ namespace MyCollectionDataBase.Controllers
                             item.ItemCase = new Case();
                             item.ItemCase.CaseType = Request.Form["CaseType"];
                             item.ItemCase.Cover = Request.Form["Cover"];
+                            if (Convert.ToInt32(Request.Form["4K Blu-Ray"]) != 0) { item.ItemCase.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["4K Blu-Ray"]), Format = "4K Blu-Ray" }); }
+                            if (Convert.ToInt32(Request.Form["3D Blu-Ray"]) != 0) { item.ItemCase.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["3D Blu-Ray"]), Format = "3D Blu-Ray" }); }
+                            if (Convert.ToInt32(Request.Form["Blu-Ray"]) != 0) { item.ItemCase.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["Blu-Ray"]), Format = "Blu-Ray" }); }
+                            if (Convert.ToInt32(Request.Form["DVD"]) != 0) { item.ItemCase.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["DVD"]), Format = "DVD" }); }
+                            if (Convert.ToInt32(Request.Form["CD"]) != 0) { item.ItemCase.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["CD"]), Format = "CD" }); }
                             collectionRepository.SaveItem(item, item.ItemCase);
                             break;
 
@@ -155,6 +162,11 @@ namespace MyCollectionDataBase.Controllers
                             item.ItemMedia.MediaType = Request.Form["MediaType"];
                             item.ItemMedia.Runtime = Convert.ToInt32(Request.Form["Runtime"]);
                             item.ItemMedia.Platform = Request.Form["Platform"];
+                            if (Convert.ToInt32(Request.Form["4K Blu-Ray"]) != 0) { item.ItemMedia.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["4K Blu-Ray"]), Format = "4K Blu-Ray" }); }
+                            if (Convert.ToInt32(Request.Form["3D Blu-Ray"]) != 0) { item.ItemMedia.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["3D Blu-Ray"]), Format = "3D Blu-Ray" }); }
+                            if (Convert.ToInt32(Request.Form["Blu-Ray"]) != 0) { item.ItemMedia.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["Blu-Ray"]), Format = "Blu-Ray" }); }
+                            if (Convert.ToInt32(Request.Form["DVD"]) != 0) { item.ItemMedia.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["DVD"]), Format = "DVD" }); }
+                            if (Convert.ToInt32(Request.Form["CD"]) != 0) { item.ItemMedia.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["CD"]), Format = "CD" }); }
                             collectionRepository.SaveItem(item, item.ItemMedia);
                             break;
 
@@ -219,7 +231,7 @@ namespace MyCollectionDataBase.Controllers
                 userID = Convert.ToInt32(HttpContext.Session.GetInt32("UserID"));
                 try
                 {
-                    // collectionRepository.DeleteItem(id, userID);
+                    collectionRepository.DeleteItem(id, userID);
                     return RedirectToAction("Index");
                 }
                 catch (Exception e)
@@ -233,7 +245,9 @@ namespace MyCollectionDataBase.Controllers
 
         public IActionResult TypeDetails(string filter, Item item)
         {
-            ;
+            ViewBag.Finishes = collectionRepository.GetFinishes().OrderBy(s => s);
+            ViewBag.Genres = collectionRepository.GetGenres().OrderBy(s => s);
+
             switch (filter)
             {
                 case "Book":
