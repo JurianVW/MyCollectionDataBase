@@ -103,6 +103,7 @@ namespace MyCollectionDataBase.Controllers
         [HttpPost]
         public IActionResult Create(Item item)
         {
+            //Couldn't find a better way to do this, because when I click submit, it doesn't give me the item I want to get.
             if (ModelState.IsValid)
             {
                 item.ItemType = Request.Form["TypeRadio"];
@@ -131,6 +132,18 @@ namespace MyCollectionDataBase.Controllers
                 foreach (string s in collectionRepository.SeperateString(Request.Form["Finishes"]))
                 {
                     item.tags.Add(new Tag() { Name = s, Type = "Finish" });
+                }
+                int counter = 0;
+                foreach (string s in collectionRepository.SeperateString(Request.Form["Images"]))
+                {
+                    string substring = "";
+                    int lastIndex = s.LastIndexOf(".");
+                    if (lastIndex > 0) { substring = s.Substring(lastIndex).ToLower(); }
+                    if (substring == ".png" || substring == ".gif" || substring == ".jpg" || substring == ".jpeg")
+                    {
+                        counter++;
+                        item.images.Add(new Image() { ItemPicture = s, Position = counter });
+                    }
                 }
                 userID = Convert.ToInt32(HttpContext.Session.GetInt32("UserID"));
                 try
@@ -174,7 +187,7 @@ namespace MyCollectionDataBase.Controllers
                             collectionRepository.SaveItem(item);
                             break;
                     }
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Details", new { id = item.ID });
                 }
                 catch (Exception e)
                 {

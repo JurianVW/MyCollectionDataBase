@@ -25,7 +25,7 @@ namespace Repository.Data
 
         Item GetItem(int itemID, int userID);
 
-        List<Item> GetAllItems(int userID);
+        List<Item> GetItems(int userID);
 
         List<Item> GetItems(int listID, int userID);
 

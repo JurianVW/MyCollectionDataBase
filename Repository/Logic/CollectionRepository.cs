@@ -54,7 +54,7 @@ namespace Repository.Logic
 
         public List<Item> GetAllItems(int userID)
         {
-            return context.GetAllItems(userID);
+            return context.GetItems(userID);
         }
 
         public void SaveItem(Item item)

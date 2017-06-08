@@ -1,7 +1,48 @@
-@model Models.User
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using Models
+@model List<Models.List>
 @{
     ViewData["Title"] = "Profile";
+
+    //Count total items
+    int totalItems = 0;
+    foreach (List l in Model)
+    {
+        totalItems = totalItems + l.items.Count();
+    }
+
+    //Count total lists
+    int totalLists = Model.Count;
 }
 
-<h2>@Model.Username's profile</h2>
+<h2>@ViewBag.User.Username's profile</h2>
 <p>This will be a profile page. Here you will be able to find some basic information about the user and their collection. </p>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>Basic info</h4>
+            </div>
+            <div class="panel-body">
+                <img srcset="@ViewBag.User.ProfilePicture" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Profile picture" class="img-thumbnail pull-right" width="200" height="200" />
+                <p><b>Username: </b> @ViewBag.User.Username</p>
+                <p><b>Email: </b> @ViewBag.User.EmailAddress</p>
+                <br />
+                <p><b>Lists: </b> @totalLists</p>
+                <p><b>Items: </b> @totalItems</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4>Top 10 total items (friends)</h4>
+            </div>
+            <div class="panel-body">
+                <p>Here should be a list of friends and their total items.</p>
+            </div>
+        </div>
+    </div>
+</div>

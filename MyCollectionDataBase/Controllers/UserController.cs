@@ -15,6 +15,7 @@ namespace MyCollectionDataBase.Controllers
     public class UserController : Controller
     {
         private UserRepository userRepository = new UserRepository(new UserSQLContext());
+        private CollectionRepository collectionRepository = new CollectionRepository(new CollectionSQLContext());
 
         private int userID;
 
@@ -115,13 +116,15 @@ namespace MyCollectionDataBase.Controllers
                 {
                     if (HttpContext.Session.GetString("Username") == username)
                     {
-                        return View(userRepository.GetUser(username));
+                        ViewBag.User = userRepository.GetUser(username);
+                        return View(collectionRepository.GetLists(ViewBag.User.ID));
                     }
                     foreach (string friend in userRepository.GetUserFriendUsernames(HttpContext.Session.GetString("Username")))
                     {
                         if (friend == username)
                         {
-                            return View(userRepository.GetUser(username));
+                            ViewBag.User = userRepository.GetUser(username);
+                            return View(collectionRepository.GetLists(ViewBag.User.ID));
                         }
                     }
                     return RedirectToAction("Profile", new { username = HttpContext.Session.GetString("Username") });
@@ -189,7 +192,7 @@ namespace MyCollectionDataBase.Controllers
                         us.ID = Convert.ToInt32(HttpContext.Session.GetInt32("UserID"));
                         userRepository.SaveUser(us);
                         HttpContext.Session.SetString("Username", us.Username);
-                        return RedirectToRoute("User", new { action = "Profile", us.Username });
+                        return RedirectToAction("Profile", new { username = HttpContext.Session.GetString("Username") });
                     }
                 }
                 catch (Exception e)

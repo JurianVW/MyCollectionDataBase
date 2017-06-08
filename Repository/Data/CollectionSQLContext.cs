@@ -92,12 +92,14 @@ namespace Repository.Data
                 }
             }
             GetItemTags(item);
+            GetImages(item);
             return item;
         }
 
-        public List<Item> GetAllItems(int userID)
+        public List<Item> GetItems(int userID)
         {
             string query = "SELECT * FROM [Item] i JOIN List_Item li ON li.Item_ID = i.ID JOIN List l ON l.ID = li.List_ID WHERE l.User_ID = @User_ID";
+
             List<Item> items = new List<Item>();
             using (SqlCommand command = con.Connection.CreateCommand())
             {
@@ -108,7 +110,7 @@ namespace Repository.Data
                 {
                     while (dataReader.Read())
                     {
-                        items.Add(new Item
+                        Item item = new Item
                         {
                             ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
                             ItemType = dataReader.GetString(dataReader.GetOrdinal("Type")),
@@ -120,8 +122,10 @@ namespace Repository.Data
                             Retailer = dataReader.IsDBNull(dataReader.GetOrdinal("Retailer")) ? "" : dataReader.GetString(dataReader.GetOrdinal("Retailer")),
                             Exclusive = dataReader.IsDBNull(dataReader.GetOrdinal("Exclusive")) ? "" : dataReader.GetString(dataReader.GetOrdinal("Exclusive")),
                             Limited = dataReader.IsDBNull(dataReader.GetOrdinal("Limited")) ? 0 : dataReader.GetInt32(dataReader.GetOrdinal("Limited"))
-                        }
-                        );
+                        };
+                        GetItemTags(item);
+                        GetImages(item);
+                        items.Add(item);
                     }
                 }
             }
@@ -130,7 +134,7 @@ namespace Repository.Data
 
         public List<Item> GetItems(int listID, int userID)
         {
-            string query = "SELECT i.ID, i.Type, i.Title, i.Description, i.Price, i.Year, i.Country, i.Retailer, i.Exclusive, i.Limited  FROM [Item] i JOIN List_Item li ON li.Item_ID = i.ID JOIN List l ON l.ID = li.List_ID WHERE li.List_ID = @List_ID AND l.User_ID = @User_ID";
+            string query = "SELECT i.*  FROM [Item] i JOIN List_Item li ON li.Item_ID = i.ID JOIN List l ON l.ID = li.List_ID WHERE li.List_ID = @List_ID AND l.User_ID = @User_ID";
             List<Item> items = new List<Item>();
             using (SqlCommand command = con.Connection.CreateCommand())
             {
@@ -142,7 +146,7 @@ namespace Repository.Data
                 {
                     while (dataReader.Read())
                     {
-                        items.Add(new Item
+                        Item item = new Item
                         {
                             ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
                             ItemType = dataReader.GetString(dataReader.GetOrdinal("Type")),
@@ -154,8 +158,10 @@ namespace Repository.Data
                             Retailer = dataReader.IsDBNull(dataReader.GetOrdinal("Retailer")) ? "" : dataReader.GetString(dataReader.GetOrdinal("Retailer")),
                             Exclusive = dataReader.IsDBNull(dataReader.GetOrdinal("Exclusive")) ? "" : dataReader.GetString(dataReader.GetOrdinal("Exclusive")),
                             Limited = dataReader.IsDBNull(dataReader.GetOrdinal("Limited")) ? 0 : dataReader.GetInt32(dataReader.GetOrdinal("Limited"))
-                        }
-                        );
+                        };
+                        GetItemTags(item);
+                        GetImages(item);
+                        items.Add(item);
                     }
                 }
             }
@@ -260,6 +266,7 @@ namespace Repository.Data
                     SaveListItem(item);
                 }
                 SaveItemTags(item);
+                SaveImages(item);
             }
         }
 
@@ -468,6 +475,49 @@ namespace Repository.Data
                             ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
                             Name = dataReader.GetString(dataReader.GetOrdinal("Name")),
                             Type = dataReader.GetString(dataReader.GetOrdinal("Type"))
+                        });
+                    }
+                }
+            }
+        }
+
+        public void SaveImages(Item item)
+        {
+            string query = "INSERT INTO [Image] ([Item_ID], [Item_Picture], [Position])" +
+                           " VALUES (@ItemID, @ItemPicture, @Position)";
+
+            foreach (Image i in item.images)
+            {
+                using (SqlCommand command = con.Connection.CreateCommand())
+                {
+                    command.CommandText = query;
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@ItemID", item.ID);
+                    command.Parameters.AddWithValue("@ItemPicture", i.ItemPicture);
+                    command.Parameters.AddWithValue("@Position", i.Position);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void GetImages(Item item)
+        {
+            string query = "SELECT * FROM [Image] i " +
+                           "WHERE i.Item_ID = @ItemID";
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ItemID", item.ID);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        item.images.Add(new Image
+                        {
+                            ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                            ItemPicture = dataReader.GetString(dataReader.GetOrdinal("Item_Picture")),
+                            Position = dataReader.GetInt32(dataReader.GetOrdinal("Position"))
                         });
                     }
                 }

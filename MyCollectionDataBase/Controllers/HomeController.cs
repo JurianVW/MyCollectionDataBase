@@ -54,10 +54,11 @@ namespace MyCollectionDataBase.Controllers
         {
             if (HttpContext.Session.Get("Username") != null)
             {
+                ViewBag.Username = HttpContext.Session.GetString("Username");
                 userID = Convert.ToInt32(HttpContext.Session.GetInt32("UserID"));
                 try
                 {
-                    return View(collectionRepository.GetLists(userID));
+                    return View(collectionRepository.GetLists(userID).OrderBy(s => s.Name));
                 }
                 catch (Exception e)
                 {
@@ -68,6 +69,7 @@ namespace MyCollectionDataBase.Controllers
             return RedirectToAction("Login", "User");
         }
 
+        //This link is for the api, and i use a long URL so nobody will simble upon in on accident, because it's not very useful.
         [HttpGet("Thisisaverylongurlforapi")]
         public IActionResult GetAPI()
         {
