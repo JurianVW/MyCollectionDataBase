@@ -31,6 +31,8 @@ namespace Repository.Data
 
         void DeleteItem(int itemID);
 
+        List<Disc> GetEmptyDiscs();
+
         List<string> GetFinishes();
 
         List<string> GetGenres();

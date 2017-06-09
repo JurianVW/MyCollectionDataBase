@@ -101,6 +101,7 @@ namespace Repository.Data
             string query = "SELECT * FROM [Item] i JOIN List_Item li ON li.Item_ID = i.ID JOIN List l ON l.ID = li.List_ID WHERE l.User_ID = @User_ID";
 
             List<Item> items = new List<Item>();
+
             using (SqlCommand command = con.Connection.CreateCommand())
             {
                 command.CommandText = query;
@@ -239,7 +240,7 @@ namespace Repository.Data
                 }
                 if (item.Exclusive.Trim() != "")
                 {
-                    command.Parameters.AddWithValue("@Exclusive", item.Retailer);
+                    command.Parameters.AddWithValue("@Exclusive", item.Exclusive);
                 }
                 else
                 {
@@ -247,7 +248,7 @@ namespace Repository.Data
                 }
                 if (item.Limited != 0)
                 {
-                    command.Parameters.AddWithValue("@Limited", item.Retailer);
+                    command.Parameters.AddWithValue("@Limited", item.Limited);
                 }
                 else
                 {
@@ -272,8 +273,9 @@ namespace Repository.Data
 
         public void SaveItem(Item item, Book itemBook)
         {
+            int oldItemID = item.ID;
             SaveItem(item);
-            string query = item.ID == 0
+            string query = item.ID != oldItemID
                 ? "INSERT INTO [Book] ([Item_ID], [Format], [Language], [Pages])" +
                   " VALUES (@Item_ID, @Format, @Language, @Pages)"
                 : "UPDATE [Book] SET [Item_ID]=@Item_ID, [Format]=@Format, [Language]=@Language, [Pages]=@Pages" +
@@ -316,8 +318,10 @@ namespace Repository.Data
 
         public void SaveItem(Item item, Case itemCase)
         {
+            int oldItemID = item.ID;
             SaveItem(item);
-            string query = item.ID == 0
+            string query = item.ID != oldItemID
+
                 ? "INSERT INTO [Case] ([Item_ID], [Type], [Cover])" +
                   " VALUES (@Item_ID, @Type, @Cover)"
                 : "UPDATE [Case] SET [Item_ID]=@Item_ID, [Type]=@Type, [Cover]=@Cover" +
@@ -386,7 +390,7 @@ namespace Repository.Data
         {
             List<Tag> existingTags = new List<Tag>();
 
-            string query = "SELECT * FROM [Tag] WHERE [Type] = 'Tag' OR [Type] = 'Genre'";
+            string query = "SELECT * FROM [Tag] WHERE [Type] = 'Tag' OR [Type] = 'Genre' OR [Type] = 'Finish'";
             using (SqlCommand command = con.Connection.CreateCommand())
             {
                 command.CommandText = query;
@@ -564,6 +568,39 @@ namespace Repository.Data
             }
         }
 
+        //UNDONE
+        public void GetDiscs(Item item)
+        {
+            string query = "SELECT * FROM [Case_Media_Disc] i " +
+                           "WHERE i.Item_ID = @ItemID";
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ItemID", item.ID);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        if (item.ItemType == "Case")
+                        {
+                            item.ItemCase.Discs.Add(new Disc { });
+                        }
+                        else if (item.ItemType == "Media")
+                        {
+                            item.ItemMedia.Discs.Add(new Disc { });
+                        }
+                        item.images.Add(new Image
+                        {
+                            ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                            ItemPicture = dataReader.GetString(dataReader.GetOrdinal("Item_Picture")),
+                            Position = dataReader.GetInt32(dataReader.GetOrdinal("Position"))
+                        });
+                    }
+                }
+            }
+        }
+
         public void DeleteItem(int itemID)
         {
             string query = "DELETE FROM Item WHERE ID=@ItemID";
@@ -697,6 +734,36 @@ namespace Repository.Data
                         discs.Add(new Disc
                         {
                             ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                            Format = dataReader.GetString(dataReader.GetOrdinal("Format"))
+                        });
+                    }
+                }
+            }
+            return discs;
+        }
+
+        public List<Disc> GetEmptyDiscs()
+        {
+            string query = "SELECT cmd.ID AS RelationID, cmd.Case_ID, d.*, i.Title FROM [Case_Media_Disc] cmd " +
+                           "JOIN [Disc] d ON d.ID = cmd.Disc_ID " +
+                           "JOIN [Case] c ON c.Item_ID = cmd.Case_ID " +
+                           "JOIN [Item] i ON i.ID = c.Item_ID " +
+                           "WHERE cmd.Media_ID IS NULL";
+            List<Disc> discs = new List<Disc>();
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        discs.Add(new Disc
+                        {
+                            ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                            RelationID = dataReader.GetInt32(dataReader.GetOrdinal("RelationID")),
+                            CaseID = dataReader.GetInt32(dataReader.GetOrdinal("Case_ID")),
+                            CaseTitle = dataReader.GetString(dataReader.GetOrdinal("Title")),
                             Format = dataReader.GetString(dataReader.GetOrdinal("Format"))
                         });
                     }

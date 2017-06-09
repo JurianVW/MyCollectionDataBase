@@ -32,13 +32,11 @@
             <div class="input-group">
                 <span class="input-group-addon" id="Name-addon"><b>Title</b></span>
                 <input required name="Name" value="@Model.Title" type="text" class="form-control" aria-describedby="Name-addon" style="max-width: 100%">
-                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <br />
             <div class="input-group">
                 <span class="input-group-addon" id="Description-addon"><b>Description</b></span>
                 <textarea name="Description" value="@Model.Description" type="text" class="form-control" aria-describedby="Description-addon" rows="3" style="max-width: 100%; resize: none;"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <br />
             <div class="row">
@@ -46,14 +44,12 @@
                     <div class="input-group">
                         <span class="input-group-addon" id="Price-addon"><b>Price</b></span>
                         <input name="Price" value="@Model.Price" type="number" class="form-control" aria-describedby="Price-addon" min="0" step="0.01" style="max-width: 100%">
-                        <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="input-group">
                         <span class="input-group-addon" id="Year-addon"><b>Year</b></span>
                         <input name="Year" value="@Model.Year" type="number" class="form-control" aria-describedby="Year-addon" min="0" style="max-width: 100%">
-                        <span asp-validation-for="Year" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -316,19 +312,16 @@
             <div class="input-group">
                 <span class="input-group-addon" id="Retailer-addon"><b>Retailer</b></span>
                 <input name="Retailer" value="@Model.Retailer" type="text" class="form-control" aria-describedby="Retailer-addon" style="max-width: 100%;">
-                <span asp-validation-for="Retailer" class="text-danger"></span>
             </div>
             <br />
             <div class="input-group">
                 <span class="input-group-addon" id="Exclusive-addon"><b>Exclusive</b></span>
                 <input name="Exclusive" value="@Model.Exclusive" type="text" class="form-control" aria-describedby="Exclusive-addon" style="max-width: 100%;">
-                <span asp-validation-for="Exclusive" class="text-danger"></span>
             </div>
             <br />
             <div class="input-group">
                 <span class="input-group-addon" id="Limited-addon"><b>Limited</b></span>
                 <input name="Limited" value="@Model.Limited" type="number" class="form-control" aria-describedby="Limited-addon" min="0" style="max-width: 100%;">
-                <span asp-validation-for="Limited" class="text-danger"></span>
             </div>
             <br />
             <div class="input-group">
@@ -368,6 +361,7 @@
     <script>
         $(document).ready(function() {
             $('#radiobuttons input[type="radio"]').change(LoadTypeDetails);
+
         });
 
         var LoadTypeDetails = function() {

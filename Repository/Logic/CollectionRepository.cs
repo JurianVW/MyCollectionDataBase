@@ -85,6 +85,11 @@ namespace Repository.Logic
             }
         }
 
+        public List<Disc> GetEmptyDiscs()
+        {
+            return context.GetEmptyDiscs();
+        }
+
         public List<string> GetFinishes()
         {
             return context.GetFinishes();

@@ -8,5 +8,6 @@
         public int CaseID { get; set; }
         public int MediaID { get; set; }
         public int Amount { get; set; }
+        public string CaseTitle { get; set; }
     }
 }

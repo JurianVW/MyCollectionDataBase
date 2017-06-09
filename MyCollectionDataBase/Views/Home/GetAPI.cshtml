@@ -1,4 +1,3 @@
-
 @{
     ViewData["Title"] = "GetAPI";
 }
@@ -9,8 +8,8 @@
 @section scripts{
     <script>
         $(document).ready(function () {
-            $.getJSON('api/user').done(function (users) {
-                users.forEach(function(user) {
+            $.getJSON('www.f1bets.com/api/user').done(function (users) {
+                users.forEach(function (user) {
                     var html = '<li>' + user + '</li>';
                     $('#Usernames').append(html);
                 });

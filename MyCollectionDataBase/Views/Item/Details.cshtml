@@ -5,26 +5,135 @@
 }
 
 <h2>@Model.Title</h2>
-<h4 class="@if(Model.Description == ""){<text>hidden</text>}">@Model.Description</h4>
-<h4 class="@if(Model.ItemType == ""){<text>hidden</text>}"><b>Type: </b>@Model.ItemType</h4>
-<br />
-<p class="@if(Model.Price == 0){<text>hidden</text>}"><b>Price: </b>@Model.Price</p>
-<p class="@if(Model.Year == 0){<text>hidden</text>}"><b>Year: </b>@Model.Year</p>
-<p class="@if(Model.Country == ""){<text>hidden</text>}"><b>Country: </b>@Model.Country</p>
-<p class="@if(Model.Retailer == ""){<text>hidden</text>}"><b>Retailer: </b>@Model.Retailer</p>
-<p class="@if(Model.Exclusive == ""){<text>hidden</text>}"><b>Exclusive: </b>@Model.Exclusive</p>
 
-<br />
-<p class="@if(Model.tags.Count == 0){<text>hidden</text>}">
-    <b>Genres: </b>@foreach (Tag t in @Model.tags)
-    {
-        if (t.Type == "Genre")
-        {
-            <text>@t.Name, </text>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>Basic info</h4>
+            </div>
+            <div class="panel-body">
+                <p class="@if(Model.ItemType == ""){<text>hidden</text>}"><b>Type: </b>@Model.ItemType</p>
+                <p class="@if(Model.Price == 0){<text>hidden</text>}"><b>Price: </b>@Model.Price</p>
+                <p class="@if(Model.Year == 0){<text>hidden</text>}"><b>Year: </b>@Model.Year</p>
+                <p class="@if(Model.Country == ""){<text>hidden</text>}"><b>Country: </b>@Model.Country</p>
+                <p class="@if(Model.Retailer == ""){<text>hidden</text>}"><b>Retailer: </b>@Model.Retailer</p>
+                <p class="@if(Model.Exclusive == ""){<text>hidden</text>}"><b>Exclusive: </b>@Model.Exclusive</p>
+                <p class="@if(Model.Description == ""){<text>hidden</text>}"><b>Description:</b><br/>@Model.Description</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        @if (Model.ItemType == "Book") { 
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4>Book info</h4>
+                </div>
+                <div class="panel-body">
+                    <p class="@if (Model.ItemBook.Format == "")
+                              {<text>hidden</text>}"><b>Format: </b>@Model.ItemBook.Format</p>
+                    <p class="@if (Model.ItemBook.Language == "")
+                              {<text>hidden</text>}"><b>Language: </b>@Model.ItemBook.Language</p>
+                    <p class="@if (Model.ItemBook.Pages == 0)
+                              {<text>hidden</text>}"><b>Pages: </b>@Model.ItemBook.Pages</p>
+                    <p class="@if (Model.tags.Count == 0)
+                              {<text>hidden</text>}">
+                        
+                        <b>Genres: </b>@foreach (Tag t in @Model.tags)
+                                       {
+                                           if (t.Type == "Genre")
+                                           {
+                                               <text>@t.Name, </text>
+                                           }
+                                       }
+                    </p>
+                </div>
+            </div>
         }
+    @if (Model.ItemType == "Case")
+    {
+        <div class="panel panel-info ">
+            <div class="panel-heading">
+                <h4>Case info</h4>
+            </div>
+            <div class="panel-body">
+                <p class="@if (Model.ItemCase.CaseType == "")
+                          {
+                              <text>hidden</text>
+                          }"><b>Case type: </b>@Model.ItemCase.CaseType</p>
+                <p class="@if (Model.ItemCase.Cover == "")
+                          {
+                              <text>hidden</text>
+                          }"><b>Cover type: </b>@Model.ItemCase.Cover</p>
+                <p class="@if (Model.tags.Count == 0)
+                          {
+                              <text>hidden</text>
+                          }">
+                    <b>Finishes: </b>@foreach (Tag t in @Model.tags)
+                                     {
+                                         if (t.Type == "Finish")
+                                         {
+                                             <text>@t.Name, </text>
+                                         }
+                                     }
+                </p>
+                <p class="@if (Model.ItemCase != null)
+                          {
+                              if (Model.ItemCase.Discs.Count == 0)
+                              {
+                                  <text>hidden</text>
+                              }
+                          }">
+                    <b>Ammount of discs:</b> @if (Model.ItemCase != null)
+                                             {
+                                                 @Model.ItemCase.Discs.Count
+                                             }
+                </p>
+            </div>
+        </div>
     }
-</p>
-<br />
+    @if (Model.ItemType == "Media")
+    {
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4>Media info</h4>
+            </div>
+            <div class="panel-body">
+                <p class="@if (Model.ItemMedia.MediaType == "")
+                          {<text>hidden</text>}"><b>Type: </b>@Model.ItemMedia.MediaType</p>
+                <p class="@if (Model.ItemMedia.Runtime == 0)
+                          {<text>hidden</text>}"><b>Runtime: </b>@Model.ItemMedia.Runtime</p>
+                <p class="@if (Model.ItemMedia.Platform == "")
+                          {<text>hidden</text>}"><b>Platform: </b>@Model.ItemMedia.Platform</p>
+                <p class="@if (Model.tags.Count == 0)
+                          {
+                              <text>hidden</text>
+                          }">
+                    <b>Genres: </b>@foreach (Tag t in @Model.tags)
+                                   {
+                                       if (t.Type == "Genre")
+                                       {
+                                           <text>@t.Name, </text>
+                                       }
+                                   }
+                </p>
+                <p class="@if (Model.ItemMedia != null)
+                          {
+                              if (Model.ItemMedia.Discs.Count == 0)
+                              {
+                                  <text>hidden</text>
+                              }
+                          }">
+                    <b>Ammount of discs:</b> @if (Model.ItemMedia != null)
+                                             {
+                                                 @Model.ItemMedia.Discs.Count
+                                             }
+                </p>
+            </div>
+        </div>
+    }
+    </div>
+</div>
 
 <div id="myCarousel" class="carousel slide @if(Model.images.Count == 0){<text>hidden</text>}" data-ride="carousel">
     <!-- Indicators -->

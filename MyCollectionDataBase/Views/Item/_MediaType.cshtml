@@ -1,3 +1,4 @@
+@using Models
 @model Models.Media
 
 <h3>Media Details</h3>
@@ -15,7 +16,6 @@
 <div class="input-group">
     <span class="input-group-addon" id="Runtime-addon"><b>Runtime</b></span>
     <input name="Runtime" value="@Model.Runtime" type="number" class="form-control" aria-describedby="Runtime-addon" style="max-width: 100%">
-    <span class="input-group-addon">Minutes</span>
 </div>
 <br />
 <div class="input-group">
@@ -23,35 +23,15 @@
     <input name="Platform" value="@Model.Platform" type="number" class="form-control" aria-describedby="Platform-addon" style="max-width: 100%;" placeholder="e.g. Playstion 4, XBOX One, ...">
 </div>
 <br />
-<h4>Discs</h4>
-<div class="row">
-    <div class="col-lg-6">
-        <div class="input-group">
-            <span class="input-group-addon" id="4K Blu-Ray-addon"><b>4K Blu-Ray</b></span>
-            <input name="4K Blu-Ray" value="0" type="number" class="form-control" aria-describedby="4K Blu-Ray-addon" min="0" style="max-width: 100%">
-        </div>
-        <br />
-        <div class="input-group">
-            <span class="input-group-addon" id="Blu-Ray-addon"><b>Blu-Ray</b></span>
-            <input name="Blu-Ray" value="0" type="number" class="form-control" aria-describedby="Blu-Ray-addon" min="0" style="max-width: 100%">
-        </div>
-        <br />
-        <div class="input-group">
-            <span class="input-group-addon" id="CD-addon"><b>CD</b></span>
-            <input name="CD" value="0" type="number" class="form-control" aria-describedby="CD-addon" min="0" style="max-width: 100%">
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="input-group">
-            <span class="input-group-addon" id="3D Blu-Ray-addon"><b>3D Blu-Ray</b></span>
-            <input name="3D Blu-Ray" value="0" type="number" class="form-control" aria-describedby="3D Blu-Ray-addon" min="0" style="max-width: 100%">
-        </div>
-        <br />
-        <div class="input-group">
-            <span class="input-group-addon" id="DVD-addon"><b>DVD</b></span>
-            <input name="DVD" value="0" type="number" class="form-control" aria-describedby="DVD-addon" min="0" style="max-width: 100%">
-        </div>
-    </div>
+<h4>Add to disc(s)</h4>
+<div class="input-group">
+    <span class="input-group-addon" id="Disc-addon"><b>Disc 1</b></span>
+    <select name="Discs" class="form-control" aria-describedby="Disc-addon" style="max-width: 100%">
+        @foreach (Disc d in ViewBag.Discs)
+        {
+            <option value="@d">@d.CaseTitle - @d.Format</option>
+        }
+    </select>
 </div>
 <br />
 <h4>Genres</h4>
@@ -62,3 +42,8 @@
     }
 </ul>
 <br />
+
+@section Scripts{
+    <script>
+    </script>
+}

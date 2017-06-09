@@ -198,6 +198,7 @@ namespace MyCollectionDataBase.Controllers
             return View(item);
         }
 
+        //Editing not implimented yet
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -258,6 +259,7 @@ namespace MyCollectionDataBase.Controllers
 
         public IActionResult TypeDetails(string filter, Item item)
         {
+            ViewBag.Discs = collectionRepository.GetEmptyDiscs().OrderBy(s => s.CaseTitle);
             ViewBag.Finishes = collectionRepository.GetFinishes().OrderBy(s => s);
             ViewBag.Genres = collectionRepository.GetGenres().OrderBy(s => s);
 
