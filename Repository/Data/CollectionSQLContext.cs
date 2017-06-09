@@ -93,6 +93,7 @@ namespace Repository.Data
             }
             GetItemTags(item);
             GetImages(item);
+            GetDiscs(item);
             return item;
         }
 
@@ -383,7 +384,10 @@ namespace Repository.Data
 
                 command.ExecuteNonQuery();
             }
-            SaveDiscs(item);
+            foreach (Disc d in itemMedia.Discs)
+            {
+                SaveMediaDisc(item, d.RelationID);
+            }
         }
 
         public void SaveItemTags(Item item)
@@ -568,11 +572,23 @@ namespace Repository.Data
             }
         }
 
-        //UNDONE
+        public void SaveMediaDisc(Item item, int relationID)
+        {
+            string query = "UPDATE [Case_Media_Disc] SET Media_ID=@MediaID WHERE ID=@RelationID";
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@RelationID", relationID);
+                command.Parameters.AddWithValue("@MediaID", item.ID);
+                command.ExecuteNonQuery();
+            }
+        }
+
         public void GetDiscs(Item item)
         {
-            string query = "SELECT * FROM [Case_Media_Disc] i " +
-                           "WHERE i.Item_ID = @ItemID";
+            string query = "SELECT * FROM [Case_Media_Disc] cmd " +
+                           "WHERE cmd.Case_ID = @ItemID OR cmd.Media_ID = @ItemID";
             using (SqlCommand command = con.Connection.CreateCommand())
             {
                 command.CommandText = query;
@@ -584,18 +600,22 @@ namespace Repository.Data
                     {
                         if (item.ItemType == "Case")
                         {
-                            item.ItemCase.Discs.Add(new Disc { });
+                            item.ItemCase.Discs.Add(new Disc
+                            {
+                                RelationID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                                CaseID = dataReader.GetInt32(dataReader.GetOrdinal("Case_ID")),
+                                MediaID = dataReader.IsDBNull(dataReader.GetOrdinal("Media_ID"))? 0 : dataReader.GetInt32(dataReader.GetOrdinal("Media_ID"))
+                            });
                         }
                         else if (item.ItemType == "Media")
                         {
-                            item.ItemMedia.Discs.Add(new Disc { });
+                            item.ItemMedia.Discs.Add(new Disc
+                            {
+                                RelationID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
+                                CaseID = dataReader.GetInt32(dataReader.GetOrdinal("Case_ID")),
+                                MediaID = dataReader.GetInt32(dataReader.GetOrdinal("Media_ID"))
+                            });
                         }
-                        item.images.Add(new Image
-                        {
-                            ID = dataReader.GetInt32(dataReader.GetOrdinal("ID")),
-                            ItemPicture = dataReader.GetString(dataReader.GetOrdinal("Item_Picture")),
-                            Position = dataReader.GetInt32(dataReader.GetOrdinal("Position"))
-                        });
                     }
                 }
             }

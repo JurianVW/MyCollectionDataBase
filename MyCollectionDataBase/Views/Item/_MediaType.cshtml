@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
 @using Models
 @model Models.Media
 
@@ -23,16 +24,10 @@
     <input name="Platform" value="@Model.Platform" type="number" class="form-control" aria-describedby="Platform-addon" style="max-width: 100%;" placeholder="e.g. Playstion 4, XBOX One, ...">
 </div>
 <br />
-<h4>Add to disc(s)</h4>
-<div class="input-group">
-    <span class="input-group-addon" id="Disc-addon"><b>Disc 1</b></span>
-    <select name="Discs" class="form-control" aria-describedby="Disc-addon" style="max-width: 100%">
-        @foreach (Disc d in ViewBag.Discs)
-        {
-            <option value="@d">@d.CaseTitle - @d.Format</option>
-        }
-    </select>
-</div>
+<h4>Add disc(s)</h4>
+<div id="AddDisc"><p>Add DIscs</p></div>
+<div id="DiscsPartial"></div>
+
 <br />
 <h4>Genres</h4>
 <ul>
@@ -43,7 +38,14 @@
 </ul>
 <br />
 
-@section Scripts{
+
     <script>
+        var LoadAddDiscs = function() {
+            var nrOfSelects = $("#DiscsPartial select").length;
+
+            $.get('@Url.Action("MediaDiscs", "Item")?index=' + nrOfSelects).done(function(contents) {
+                $('#DiscsPartial').append(contents);
+            });
+        }
+        $("#AddDisc").click(LoadAddDiscs);
     </script>
-}

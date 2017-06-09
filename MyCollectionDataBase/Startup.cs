@@ -36,6 +36,13 @@ namespace MyCollectionDataBase
                 options.IdleTimeout = TimeSpan.FromDays(1);
                 options.CookieHttpOnly = true;
             });
+
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +62,8 @@ namespace MyCollectionDataBase
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseCors("MyPolicy");
+
             app.UseStaticFiles();
 
             app.UseSession();
@@ -62,9 +71,7 @@ namespace MyCollectionDataBase
             app.UseMvc(routes =>
             {
                 routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}")
-                      //.MapRoute("List", "List/{id}/{action}", new { controller = "List" })
-                      // .MapRoute("Item", "Item/{id}/{action}", new { controller = "Item" })
-                      // .MapRoute("User", "User/{username}/{action}", new { controller = "User" })
+
                       ;
             }
            );

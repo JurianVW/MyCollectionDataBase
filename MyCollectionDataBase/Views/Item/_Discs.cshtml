@@ -1,0 +1,13 @@
+﻿@using System.Collections.Generic
+@using Models
+@model IEnumerable<Disc>
+
+<div class="input-group">
+    <span class="input-group-addon" id="Disc-addon_@ViewBag.Index"><b>Disc 1</b></span>
+    <select name="Discs_@ViewBag.Index" class="form-control" aria-describedby="Disc-addon_@ViewBag.Index" style="max-width: 100%">
+        @foreach (Disc d in Model)
+            {
+            <option value="@d.RelationID">@d.CaseTitle - @d.Format</option>
+        }
+    </select>
+</div>

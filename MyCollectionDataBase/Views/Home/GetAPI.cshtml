@@ -8,7 +8,7 @@
 @section scripts{
     <script>
         $(document).ready(function () {
-            $.getJSON('www.f1bets.com/api/user').done(function (users) {
+            $.getJSON('http://www.f1bets.com/api/user').done(function (users) {
                 users.forEach(function (user) {
                     var html = '<li>' + user + '</li>';
                     $('#Usernames').append(html);

@@ -116,6 +116,7 @@ namespace MyCollectionDataBase.Controllers
                 item.Exclusive = Request.Form["Exclusive"];
                 item.Limited = Convert.ToInt32(Request.Form["Limited"]);
                 item.ListID = Convert.ToInt32(Request.Form["List"]);
+
                 if (item.ItemType == "Other")
                 {
                     item.ItemType = Request.Form["Type"];
@@ -180,6 +181,10 @@ namespace MyCollectionDataBase.Controllers
                             if (Convert.ToInt32(Request.Form["Blu-Ray"]) != 0) { item.ItemMedia.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["Blu-Ray"]), Format = "Blu-Ray" }); }
                             if (Convert.ToInt32(Request.Form["DVD"]) != 0) { item.ItemMedia.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["DVD"]), Format = "DVD" }); }
                             if (Convert.ToInt32(Request.Form["CD"]) != 0) { item.ItemMedia.Discs.Add(new Disc() { Amount = Convert.ToInt32(Request.Form["CD"]), Format = "CD" }); }
+                            foreach (string key in Request.Form.Keys.Where(k => k.StartsWith("Discs_")))
+                            {
+                                item.ItemMedia.Discs.Add(new Disc { RelationID = Convert.ToInt32(Request.Form[key]) });
+                            }
                             collectionRepository.SaveItem(item, item.ItemMedia);
                             break;
 
@@ -259,7 +264,6 @@ namespace MyCollectionDataBase.Controllers
 
         public IActionResult TypeDetails(string filter, Item item)
         {
-            ViewBag.Discs = collectionRepository.GetEmptyDiscs().OrderBy(s => s.CaseTitle);
             ViewBag.Finishes = collectionRepository.GetFinishes().OrderBy(s => s);
             ViewBag.Genres = collectionRepository.GetGenres().OrderBy(s => s);
 
@@ -281,6 +285,13 @@ namespace MyCollectionDataBase.Controllers
                     return Content("");
                     break;
             }
+        }
+
+        public IActionResult MediaDiscs(int index)
+        {
+            ViewBag.Index = index;
+
+            return PartialView("_Discs", collectionRepository.GetEmptyDiscs().OrderBy(s => s.CaseTitle));
         }
     }
 }
